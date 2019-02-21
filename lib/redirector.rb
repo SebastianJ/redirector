@@ -1,7 +1,8 @@
 module Redirector
   autoload :Middleware, 'redirector/middleware'
   autoload :RegexAttribute, 'redirector/regex_attribute'
-
+  
+  mattr_accessor :current_site
   mattr_accessor :include_query_in_source
   mattr_accessor :preserve_query
   mattr_accessor :silence_sql_logs

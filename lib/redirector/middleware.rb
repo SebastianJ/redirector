@@ -34,7 +34,7 @@ module Redirector
 
       def matched_destination
         @matched_destination ||= with_optional_silencing do
-          RedirectRule.destination_for(request_path, env)
+          ::Redirector.current_site.call.redirect_rules.destination_for(request_path, env)
         end
       end
 
@@ -84,7 +84,7 @@ module Redirector
       def destination_uri
         URI.parse(matched_destination)
       rescue URI::InvalidURIError
-        rule = RedirectRule.match_for(request_path, env)
+        rule = ::Redirector.current_site.call.redirect_rules.match_for(request_path, env)
         raise Redirector::RuleError, "RedirectRule #{rule.id} generated the bad destination: #{matched_destination}"
       end
 

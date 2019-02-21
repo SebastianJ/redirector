@@ -1,8 +1,9 @@
 class RedirectRule < ActiveRecord::Base
   extend Redirector::RegexAttribute
   regex_attribute :source
-
-  has_many :request_environment_rules, :inverse_of => :redirect_rule, :dependent => :destroy
+  
+  belongs_to :site
+  has_many :request_environment_rules, inverse_of: :redirect_rule, dependent: :destroy
 
   attr_accessible :source,
                   :source_is_regex,
@@ -11,13 +12,13 @@ class RedirectRule < ActiveRecord::Base
                   :source_is_case_sensitive,
                   :request_environment_rules_attributes if Redirector.active_record_protected_attributes?
 
-  accepts_nested_attributes_for :request_environment_rules, :allow_destroy => true, :reject_if => :all_blank
+  accepts_nested_attributes_for :request_environment_rules, allow_destroy: true, reject_if: :all_blank
 
-  validates :source, :destination, :presence => true
+  validates :source, :destination, presence: true
 
   # Not working with rails 5.0.1
   if Rails.version.to_i < 5
-    validates :active, :inclusion => { :in => ['0', '1', true, false] }
+    validates :active, inclusion: {in: ['0', '1', true, false] }
   end
 
   before_save :strip_source_whitespace
